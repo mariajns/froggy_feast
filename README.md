@@ -1,2 +1,3 @@
 # froggy_feast
-Computer graphics project. 
+
+The goal of the project is to create a small 3D game where the player controls a frog trying to catch flying insects with its tongue. The frog sits on a lily pad in a small pond environment, and the player uses the mouse to aim and catch insects moving around the scene. The main focus of the project is the frog's tongue and its animation. The tongue would be generated procedurally using a mesh based on Bézier curves, allowing it to extend, bend and retract smoothly. When an insect is caught, it gets pulled back towards the frog. The frog, insects and environment would be modeled in Blender in a low-poly style. The scene would also include basic lighting, materials and some additional animations to make it feel more alive. If time allows, additional features could include different insect types, more detailed frog animations and some visual effects.
