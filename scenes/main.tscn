@@ -1,10 +1,14 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene format=3 uid="uid://dpms0dhje8gp5"]
 
-[ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
+[ext_resource type="Script" uid="uid://bjfx5183lrmvi" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="PackedScene" path="res://scenes/insect.tscn" id="2_insect"]
+[ext_resource type="Script" uid="uid://bp0ar1qbalobe" path="res://scenes/camera_3d.gd" id="2_sugp2"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_pond"]
 size = Vector3(11, 0.14, 7)
+
+[sub_resource type="StandardMaterial3D" id="Mat_water"]
+albedo_color = Color(0.23, 0.6, 0.78, 1)
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_lily"]
 top_radius = 1.25
@@ -12,11 +16,17 @@ bottom_radius = 1.25
 height = 0.13
 radial_segments = 24
 
+[sub_resource type="StandardMaterial3D" id="Mat_lily"]
+albedo_color = Color(0.27, 0.58, 0.32, 1)
+
 [sub_resource type="SphereMesh" id="SphereMesh_frog"]
-radius = 0.70
+radius = 0.7
 height = 1.4
 radial_segments = 16
 rings = 8
+
+[sub_resource type="StandardMaterial3D" id="Mat_frog"]
+albedo_color = Color(0.38, 0.79, 0.31, 1)
 
 [sub_resource type="SphereMesh" id="SphereMesh_eye"]
 radius = 0.22
@@ -24,95 +34,102 @@ height = 0.44
 radial_segments = 12
 rings = 6
 
+[sub_resource type="StandardMaterial3D" id="Mat_eye"]
+albedo_color = Color(1, 0.97, 0.89, 1)
+
 [sub_resource type="SphereMesh" id="SphereMesh_pupil"]
 radius = 0.11
 height = 0.22
 radial_segments = 10
 rings = 6
 
-[sub_resource type="StandardMaterial3D" id="Mat_water"]
-albedo_color = Color(0.23, 0.60, 0.78, 1)
-
-[sub_resource type="StandardMaterial3D" id="Mat_lily"]
-albedo_color = Color(0.27, 0.58, 0.32, 1)
-
-[sub_resource type="StandardMaterial3D" id="Mat_frog"]
-albedo_color = Color(0.38, 0.79, 0.31, 1)
-
-[sub_resource type="StandardMaterial3D" id="Mat_eye"]
-albedo_color = Color(1, 0.97, 0.89, 1)
-
 [sub_resource type="StandardMaterial3D" id="Mat_pupil"]
 albedo_color = Color(0.08, 0.12, 0.09, 1)
 
-[node name="Main" type="Node3D"]
+[node name="Main" type="Node3D" unique_id=1656993825]
 script = ExtResource("1_main")
 
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.0, 13)
+[node name="Camera3D" type="Camera3D" parent="." unique_id=408084220 node_paths=PackedStringArray("camera_positions")]
+transform = Transform3D(-5.9604645e-08, 0, -1, 0, 1, 0, 1, 0, -5.9604645e-08, 0, 5, 13)
 current = true
 fov = 52.0
+script = ExtResource("2_sugp2")
+camera_positions = [NodePath("../CameraPositions/MainView"), NodePath("../CameraPositions/LeftSideView"), NodePath("../CameraPositions/RightSideView"), NodePath("../CameraPositions/MainFarView")]
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-rotation = Vector3(-0.8, -0.3, 0)
+[node name="CameraPositions" type="Node3D" parent="." unique_id=1267418357]
+
+[node name="MainView" type="Marker3D" parent="CameraPositions" unique_id=1292256983]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.668544, 0.700644, 0)
+
+[node name="LeftSideView" type="Marker3D" parent="CameraPositions" unique_id=1745638024]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5369067, 0.72154045, -3.4379005)
+
+[node name="RightSideView" type="Marker3D" parent="CameraPositions" unique_id=1657284759]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.3168516, 0.6626296, 2.8416986)
+
+[node name="MainFarView" type="Marker3D" parent="CameraPositions" unique_id=566463784]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.881762, 1.0390134, 0)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1551610977]
+transform = Transform3D(0.9553365, 0.21199323, -0.20589092, 0, 0.6967067, 0.7173561, 0.29552022, -0.68531644, 0.66558933, 0, 0, 0)
 light_energy = 1.4
 shadow_enabled = true
 
-[node name="Pond" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.35, 0)
+[node name="Pond" type="MeshInstance3D" parent="." unique_id=522077599]
+transform = Transform3D(3.855, 0, 0, 0, 3.855, 0, 0, 0, 3.855, 0, -0.35, 0)
 mesh = SubResource("BoxMesh_pond")
 surface_material_override/0 = SubResource("Mat_water")
 
-[node name="LilyPad" type="MeshInstance3D" parent="."]
+[node name="LilyPad" type="MeshInstance3D" parent="." unique_id=1476239427]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.7, -0.19, 0)
 mesh = SubResource("CylinderMesh_lily")
 surface_material_override/0 = SubResource("Mat_lily")
 
-[node name="FrogPlaceholder" type="Node3D" parent="."]
+[node name="FrogPlaceholder" type="Node3D" parent="." unique_id=365820932]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.7, 0, 0)
 
-[node name="Body" type="MeshInstance3D" parent="FrogPlaceholder"]
+[node name="Body" type="MeshInstance3D" parent="FrogPlaceholder" unique_id=1684909637]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.58, 0)
 mesh = SubResource("SphereMesh_frog")
 surface_material_override/0 = SubResource("Mat_frog")
 
-[node name="EyeLeft" type="MeshInstance3D" parent="FrogPlaceholder"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.34, 1.10, 0.37)
+[node name="EyeLeft" type="MeshInstance3D" parent="FrogPlaceholder" unique_id=1061758455]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.34, 1.1, 0.37)
 mesh = SubResource("SphereMesh_eye")
 surface_material_override/0 = SubResource("Mat_eye")
 
-[node name="EyeRight" type="MeshInstance3D" parent="FrogPlaceholder"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.34, 1.10, -0.37)
+[node name="EyeRight" type="MeshInstance3D" parent="FrogPlaceholder" unique_id=1854601277]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.34, 1.1, -0.37)
 mesh = SubResource("SphereMesh_eye")
 surface_material_override/0 = SubResource("Mat_eye")
 
-[node name="PupilLeft" type="MeshInstance3D" parent="FrogPlaceholder"]
+[node name="PupilLeft" type="MeshInstance3D" parent="FrogPlaceholder" unique_id=866826719]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.47, 1.11, 0.48)
 mesh = SubResource("SphereMesh_pupil")
 surface_material_override/0 = SubResource("Mat_pupil")
 
-[node name="PupilRight" type="MeshInstance3D" parent="FrogPlaceholder"]
+[node name="PupilRight" type="MeshInstance3D" parent="FrogPlaceholder" unique_id=1302895782]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.47, 1.11, -0.26)
 mesh = SubResource("SphereMesh_pupil")
 surface_material_override/0 = SubResource("Mat_pupil")
 
-[node name="InsectOne" parent="." instance=ExtResource("2_insect")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.0, 1.8, 0)
+[node name="InsectOne" parent="." unique_id=84984166 instance=ExtResource("2_insect")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.8, 0)
 flight_speed = 1.1
 
-[node name="InsectTwo" parent="." instance=ExtResource("2_insect")]
+[node name="InsectTwo" parent="." unique_id=110790763 instance=ExtResource("2_insect")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.8, 2.5, -0.6)
 flight_speed = 1.5
 phase = 1.4
 
-[node name="InsectThree" parent="." instance=ExtResource("2_insect")]
+[node name="InsectThree" parent="." unique_id=223455128 instance=ExtResource("2_insect")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.8, 1.3, 0.4)
 flight_speed = 1.7
 phase = 2.2
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=550462399]
 
-[node name="StatusLabel" type="Label" parent="CanvasLayer"]
+[node name="StatusLabel" type="Label" parent="CanvasLayer" unique_id=1823310226]
 offset_left = 24.0
 offset_top = 24.0
 offset_right = 650.0

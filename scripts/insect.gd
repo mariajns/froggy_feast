@@ -11,13 +11,13 @@ var elapsed: float = 0.0
 
 
 func _ready() -> void:
-    starting_position = position
+	starting_position = position
 
 
 func _process(delta: float) -> void:
-    elapsed += delta
-    position = starting_position + Vector3(
-        sin(elapsed * flight_speed + phase) * flight_width,
-        sin(elapsed * flight_speed * 1.4 + phase) * flight_height,
-        0.0
-    )
+	elapsed += delta
+	position = starting_position + Vector3(
+		sin(elapsed * flight_speed + phase) * flight_width,
+		sin(elapsed * flight_speed * 1.4 + phase) * flight_height,
+		0.0
+	)
