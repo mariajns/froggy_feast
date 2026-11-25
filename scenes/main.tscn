@@ -45,6 +45,15 @@ shader_parameter/foam_softness = 0.01
 shader_parameter/foam_noise = SubResource("NoiseTexture2D_jyhfs")
 shader_parameter/foam_noise_scale = 0.5
 shader_parameter/foam_speed = 0.05
+shader_parameter/line_color = Color(1, 1, 1, 1)
+shader_parameter/line_scale = 0.1
+shader_parameter/line_stretch = Vector2(3, 2)
+shader_parameter/line_width = 0.02000000095
+shader_parameter/line_speed = 0.02
+shader_parameter/mask_scale = 0.1
+shader_parameter/mask_threshold = 0.70000003325
+shader_parameter/line_fade_start = 8.0
+shader_parameter/line_fade_end = 20.0
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_btfyo"]
 size = Vector2(42, 27)
