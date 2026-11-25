@@ -3,12 +3,66 @@
 [ext_resource type="Script" uid="uid://bjfx5183lrmvi" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="PackedScene" path="res://scenes/insect.tscn" id="2_insect"]
 [ext_resource type="Script" uid="uid://bp0ar1qbalobe" path="res://scenes/camera_3d.gd" id="2_sugp2"]
+[ext_resource type="Shader" uid="uid://cwe1dh6cq87e5" path="res://shaders/water.gdshader" id="3_jyhfs"]
+[ext_resource type="Script" uid="uid://d0dei1e8lpsyo" path="res://scripts/water.gd" id="4_tbgi4"]
+[ext_resource type="Script" uid="uid://deijtt3dri0fs" path="res://scripts/floater.gd" id="5_tefeu"]
 
-[sub_resource type="BoxMesh" id="BoxMesh_pond"]
-size = Vector3(11, 0.14, 7)
+[sub_resource type="PlaneMesh" id="PlaneMesh_sugp2"]
+size = Vector2(42, 27)
+subdivide_width = 120
+subdivide_depth = 80
 
-[sub_resource type="StandardMaterial3D" id="Mat_water"]
-albedo_color = Color(0.23, 0.6, 0.78, 1)
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_tbgi4"]
+frequency = 0.05
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_jyhfs"]
+width = 256
+height = 256
+noise = SubResource("FastNoiseLite_tbgi4")
+seamless = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jyhfs"]
+render_priority = 0
+shader = ExtResource("3_jyhfs")
+shader_parameter/near_color = Color(0.12, 0.45, 0.75, 1)
+shader_parameter/mid_color = Color(0.25, 0.65, 0.88, 1)
+shader_parameter/far_color = Color(0.6, 0.88, 0.97, 1)
+shader_parameter/fresnel_power = 5.0
+shader_parameter/band_1 = 0.400000019
+shader_parameter/band_2 = 0.50000002375
+shader_parameter/band_softness = 0.0010000000475
+shader_parameter/wave_height = 0.06
+shader_parameter/wave_speed = 1.0
+shader_parameter/wave_scale = 0.8
+shader_parameter/wave_time = -1.0
+shader_parameter/shadow_threshold = 0.1
+shader_parameter/shadow_strength = 0.6
+shader_parameter/spec_shininess = 128.0
+shader_parameter/spec_threshold = 0.5
+shader_parameter/spec_strength = 1.5
+shader_parameter/min_alpha = 0.25
+shader_parameter/visibility_depth = 3.0
+shader_parameter/foam_color = Color(1, 1, 1, 1)
+shader_parameter/foam_width = 0.2000000095
+shader_parameter/foam_softness = 0.01
+shader_parameter/foam_noise = SubResource("NoiseTexture2D_jyhfs")
+shader_parameter/foam_noise_scale = 0.5
+shader_parameter/foam_speed = 0.05
+shader_parameter/line_color = Color(1, 1, 1, 1)
+shader_parameter/line_scale = 0.1
+shader_parameter/line_stretch = Vector2(3, 2)
+shader_parameter/line_width = 0.02000000095
+shader_parameter/line_speed = 0.02
+shader_parameter/mask_scale = 0.1
+shader_parameter/mask_threshold = 0.70000003325
+shader_parameter/line_fade_start = 8.0
+shader_parameter/line_fade_end = 20.0
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_btfyo"]
+size = Vector2(42, 27)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fts8x"]
+albedo_color = Color(0.47843137, 0.41568628, 0.27058825, 1)
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_lily"]
 top_radius = 1.25
@@ -71,22 +125,36 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.3168516, 0.6626296, 2.8416
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.881762, 1.0390134, 0)
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1551610977]
-transform = Transform3D(0.9553365, 0.21199323, -0.20589092, 0, 0.6967067, 0.7173561, 0.29552022, -0.68531644, 0.66558933, 0, 0, 0)
+transform = Transform3D(0.9553365, 0.21199323, -0.20589091, 0, 0.6967067, 0.7173561, 0.29552022, -0.68531644, 0.66558933, 0, 6.1889358, 0)
 light_energy = 1.4
 shadow_enabled = true
 
 [node name="Pond" type="MeshInstance3D" parent="." unique_id=522077599]
-transform = Transform3D(3.855, 0, 0, 0, 3.855, 0, 0, 0, 3.855, 0, -0.35, 0)
-mesh = SubResource("BoxMesh_pond")
-surface_material_override/0 = SubResource("Mat_water")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.15, 0)
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_sugp2")
+surface_material_override/0 = SubResource("ShaderMaterial_jyhfs")
+script = ExtResource("4_tbgi4")
 
-[node name="LilyPad" type="MeshInstance3D" parent="." unique_id=1476239427]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.7, -0.19, 0)
+[node name="PondFloor" type="MeshInstance3D" parent="." unique_id=690246291]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.6, 0)
+mesh = SubResource("PlaneMesh_btfyo")
+surface_material_override/0 = SubResource("StandardMaterial3D_fts8x")
+
+[node name="LilyPad" type="MeshInstance3D" parent="." unique_id=1476239427 node_paths=PackedStringArray("water")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.7, -0.17, 0)
 mesh = SubResource("CylinderMesh_lily")
 surface_material_override/0 = SubResource("Mat_lily")
+script = ExtResource("5_tefeu")
+water = NodePath("../Pond")
+tilt_strength = 1.0
+sample_distance = 1.0
 
-[node name="FrogPlaceholder" type="Node3D" parent="." unique_id=365820932]
+[node name="FrogPlaceholder" type="Node3D" parent="." unique_id=365820932 node_paths=PackedStringArray("water")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.7, 0, 0)
+script = ExtResource("5_tefeu")
+water = NodePath("../Pond")
+tilt_strength = 1.0
 
 [node name="Body" type="MeshInstance3D" parent="FrogPlaceholder" unique_id=1684909637]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.58, 0)
