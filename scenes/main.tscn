@@ -4,6 +4,8 @@
 [ext_resource type="PackedScene" path="res://scenes/insect.tscn" id="2_insect"]
 [ext_resource type="Script" uid="uid://bp0ar1qbalobe" path="res://scenes/camera_3d.gd" id="2_sugp2"]
 [ext_resource type="Shader" uid="uid://cwe1dh6cq87e5" path="res://shaders/water.gdshader" id="3_jyhfs"]
+[ext_resource type="Script" uid="uid://d0dei1e8lpsyo" path="res://scripts/water.gd" id="4_tbgi4"]
+[ext_resource type="Script" uid="uid://deijtt3dri0fs" path="res://scripts/floater.gd" id="5_tefeu"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_sugp2"]
 size = Vector2(42, 27)
@@ -29,9 +31,10 @@ shader_parameter/fresnel_power = 5.0
 shader_parameter/band_1 = 0.400000019
 shader_parameter/band_2 = 0.50000002375
 shader_parameter/band_softness = 0.0010000000475
-shader_parameter/wave_height = 0.02
+shader_parameter/wave_height = 0.06
 shader_parameter/wave_speed = 1.0
 shader_parameter/wave_scale = 0.8
+shader_parameter/wave_time = -1.0
 shader_parameter/shadow_threshold = 0.1
 shader_parameter/shadow_strength = 0.6
 shader_parameter/spec_shininess = 128.0
@@ -131,19 +134,27 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.15, 0)
 cast_shadow = 0
 mesh = SubResource("PlaneMesh_sugp2")
 surface_material_override/0 = SubResource("ShaderMaterial_jyhfs")
+script = ExtResource("4_tbgi4")
 
 [node name="PondFloor" type="MeshInstance3D" parent="." unique_id=690246291]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.6, 0)
 mesh = SubResource("PlaneMesh_btfyo")
 surface_material_override/0 = SubResource("StandardMaterial3D_fts8x")
 
-[node name="LilyPad" type="MeshInstance3D" parent="." unique_id=1476239427]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.7, -0.19, 0)
+[node name="LilyPad" type="MeshInstance3D" parent="." unique_id=1476239427 node_paths=PackedStringArray("water")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.7, -0.17, 0)
 mesh = SubResource("CylinderMesh_lily")
 surface_material_override/0 = SubResource("Mat_lily")
+script = ExtResource("5_tefeu")
+water = NodePath("../Pond")
+tilt_strength = 1.0
+sample_distance = 1.0
 
-[node name="FrogPlaceholder" type="Node3D" parent="." unique_id=365820932]
+[node name="FrogPlaceholder" type="Node3D" parent="." unique_id=365820932 node_paths=PackedStringArray("water")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.7, 0, 0)
+script = ExtResource("5_tefeu")
+water = NodePath("../Pond")
+tilt_strength = 1.0
 
 [node name="Body" type="MeshInstance3D" parent="FrogPlaceholder" unique_id=1684909637]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.58, 0)

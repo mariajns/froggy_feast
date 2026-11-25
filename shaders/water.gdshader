@@ -13,6 +13,7 @@ uniform float band_softness : hint_range(0.001, 0.1) = 0.01;
 uniform float wave_height = 0.02;
 uniform float wave_speed = 1.0;
 uniform float wave_scale = 0.8;
+uniform float wave_time = -1.0;
 
 // ---------- Toon lighting ----------
 uniform float shadow_threshold : hint_range(-1.0, 1.0) = 0.1;
@@ -51,14 +52,16 @@ float wave(vec2 p, float t) {
 }
 
 void vertex() {
+	// Use the script's time when it's set, otherwise the built-in TIME
+	float t = wave_time < 0.0 ? TIME : wave_time;
+
 	vec3 world = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
-	float h = wave(world.xz, TIME);
+	float h = wave(world.xz, t);
 	VERTEX.y += h * wave_height;
 
-	// Recalculate the normal so light reacts to the waves
 	float e = 0.1;
-	float hx = wave(world.xz + vec2(e, 0.0), TIME) - h;
-	float hz = wave(world.xz + vec2(0.0, e), TIME) - h;
+	float hx = wave(world.xz + vec2(e, 0.0), t) - h;
+	float hz = wave(world.xz + vec2(0.0, e), t) - h;
 	NORMAL = normalize(vec3(-hx * wave_height / e, 1.0, -hz * wave_height / e));
 }
 
