@@ -26,6 +26,14 @@ uniform sampler2D depth_tex : hint_depth_texture, repeat_disable, filter_nearest
 uniform float min_alpha : hint_range(0.0, 1.0) = 0.25;
 uniform float visibility_depth : hint_range(0.1, 10.0) = 3.0;
 
+// ---------- Foam ----------
+uniform vec4 foam_color : source_color = vec4(1.0, 1.0, 1.0, 1.0);
+uniform float foam_width : hint_range(0.0, 0.5) = 0.08;
+uniform float foam_softness : hint_range(0.001, 0.1) = 0.01;
+uniform sampler2D foam_noise : repeat_enable, filter_linear_mipmap;
+uniform float foam_noise_scale = 0.5;
+uniform float foam_speed = 0.05;
+
 float wave(vec2 p, float t) {
 	return sin(p.x * wave_scale + t * wave_speed) * 0.5
 	     + sin(p.y * wave_scale * 1.3 + t * wave_speed * 0.8) * 0.5;
@@ -51,7 +59,7 @@ void fragment() {
 	vec3 col = mix(near_color.rgb, mid_color.rgb, b1);
 	col = mix(col, far_color.rgb, b2);
 
-	// How far is the thing behind the water?
+	// Position of whatever is behind the water
 	float raw_depth = texture(depth_tex, SCREEN_UV).r;
 #if CURRENT_RENDERER == RENDERER_COMPATIBILITY
 	vec3 ndc = vec3(SCREEN_UV, raw_depth) * 2.0 - 1.0;
@@ -61,14 +69,25 @@ void fragment() {
 	vec4 behind = INV_PROJECTION_MATRIX * vec4(ndc, 1.0);
 	behind.xyz /= behind.w;
 
-	// Distance the view ray travels through the water
+	// Transparency (along the view ray)
 	float water_thickness = -behind.z - (-VERTEX.z);
-
-	// Transparency
 	float t = clamp(water_thickness / visibility_depth, 0.0, 1.0);
+	float alpha = mix(min_alpha, 1.0, t);
+
+	// Foam (straight-down depth)
+	vec3 behind_world  = (INV_VIEW_MATRIX * vec4(behind.xyz, 1.0)).xyz;
+	vec3 surface_world = (INV_VIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
+	float vertical_depth = surface_world.y - behind_world.y;
+
+	float foam_gradient = 1.0 - clamp(vertical_depth / foam_width, 0.0, 1.0);
+	float n = texture(foam_noise, surface_world.xz * foam_noise_scale + TIME * foam_speed).r;
+	float foam = smoothstep(n - foam_softness, n + foam_softness, foam_gradient);
+
+	col = mix(col, foam_color.rgb, foam);
+	alpha = max(alpha, foam);
 
 	ALBEDO = col;
-	ALPHA = mix(min_alpha, 1.0, t);
+	ALPHA = alpha;
 	ROUGHNESS = 1.0;
 	SPECULAR = 0.0;
 }
