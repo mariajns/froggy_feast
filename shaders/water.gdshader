@@ -17,7 +17,7 @@ uniform float wave_time = -1.0;
 
 // ---------- Toon lighting ----------
 uniform float shadow_threshold : hint_range(-1.0, 1.0) = 0.1;
-uniform float shadow_strength : hint_range(0.0, 1.0) = 0.6;
+uniform vec4 shadow_tint : source_color = vec4(0.55, 0.62, 0.85, 1.0);
 
 
 // ---------- Transparency ----------
@@ -143,7 +143,7 @@ void light() {
 	// Lit or shadowed, with a hard edge
 	float ndl = dot(NORMAL, LIGHT) * ATTENUATION;
 	float lit = smoothstep(shadow_threshold - 0.02, shadow_threshold + 0.02, ndl);
-	DIFFUSE_LIGHT += mix(shadow_strength, 1.0, lit) * LIGHT_COLOR / PI;
+	DIFFUSE_LIGHT += mix(shadow_tint.rgb, vec3(1.0), lit) * LIGHT_COLOR / PI;
 
 	// Where the sun reflects toward the camera
 	vec3 half_dir = normalize(LIGHT + VIEW);
