@@ -37,9 +37,6 @@ shader_parameter/wave_scale = 0.8
 shader_parameter/wave_time = -1.0
 shader_parameter/shadow_threshold = 0.1
 shader_parameter/shadow_strength = 0.6
-shader_parameter/spec_shininess = 128.0
-shader_parameter/spec_threshold = 0.5
-shader_parameter/spec_strength = 1.5
 shader_parameter/min_alpha = 0.25
 shader_parameter/visibility_depth = 3.0
 shader_parameter/foam_color = Color(1, 1, 1, 1)
@@ -57,6 +54,14 @@ shader_parameter/mask_scale = 0.1
 shader_parameter/mask_threshold = 0.70000003325
 shader_parameter/line_fade_start = 8.0
 shader_parameter/line_fade_end = 20.0
+shader_parameter/sparkle_spread = 24.0
+shader_parameter/sparkle_region = 0.3
+shader_parameter/sparkle_everywhere = 0.0
+shader_parameter/sparkle_scale = 3.0
+shader_parameter/sparkle_threshold = 0.45
+shader_parameter/sparkle_speed = 0.3
+shader_parameter/sparkle_strength = 3.0
+shader_parameter/sparkle_fade_end = 12.0
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_btfyo"]
 size = Vector2(42, 27)
