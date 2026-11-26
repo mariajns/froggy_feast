@@ -36,10 +36,7 @@ shader_parameter/wave_speed = 1.0
 shader_parameter/wave_scale = 0.8
 shader_parameter/wave_time = -1.0
 shader_parameter/shadow_threshold = 0.1
-shader_parameter/shadow_strength = 0.6
-shader_parameter/spec_shininess = 128.0
-shader_parameter/spec_threshold = 0.5
-shader_parameter/spec_strength = 1.5
+shader_parameter/shadow_tint = Color(0.55, 0.62, 0.85, 1)
 shader_parameter/min_alpha = 0.25
 shader_parameter/visibility_depth = 3.0
 shader_parameter/foam_color = Color(1, 1, 1, 1)
@@ -57,6 +54,14 @@ shader_parameter/mask_scale = 0.1
 shader_parameter/mask_threshold = 0.70000003325
 shader_parameter/line_fade_start = 8.0
 shader_parameter/line_fade_end = 20.0
+shader_parameter/sparkle_spread = 24.0
+shader_parameter/sparkle_region = 0.3
+shader_parameter/sparkle_everywhere = 0.10000000475
+shader_parameter/sparkle_scale = 3.0
+shader_parameter/sparkle_threshold = 0.45
+shader_parameter/sparkle_speed = 0.3
+shader_parameter/sparkle_strength = 3.0
+shader_parameter/sparkle_fade_end = 12.0
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_btfyo"]
 size = Vector2(42, 27)
@@ -100,6 +105,26 @@ rings = 6
 [sub_resource type="StandardMaterial3D" id="Mat_pupil"]
 albedo_color = Color(0.08, 0.12, 0.09, 1)
 
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_22che"]
+sky_top_color = Color(0.3529412, 0.6509804, 0.9490196, 1)
+sky_horizon_color = Color(0.76862746, 0.9019608, 1, 1)
+ground_bottom_color = Color(0.2, 0.42352942, 0.3019608, 1)
+ground_horizon_color = Color(0.8404648, 0.88127095, 0.6961319, 1)
+
+[sub_resource type="Sky" id="Sky_fts8x"]
+sky_material = SubResource("ProceduralSkyMaterial_22che")
+
+[sub_resource type="Environment" id="Environment_btfyo"]
+background_mode = 2
+sky = SubResource("Sky_fts8x")
+ambient_light_color = Color(0.6509804, 0.78039217, 0.9490196, 1)
+ambient_light_energy = 0.5
+glow_enabled = true
+glow_intensity = 0.6
+glow_hdr_threshold = 0.9
+fog_light_color = Color(0.76862746, 0.9019608, 1, 1)
+fog_density = 0.0
+
 [node name="Main" type="Node3D" unique_id=1656993825]
 script = ExtResource("1_main")
 
@@ -125,8 +150,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.3168516, 0.6626296, 2.8416
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.881762, 1.0390134, 0)
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1551610977]
-transform = Transform3D(0.9553365, 0.21199323, -0.20589091, 0, 0.6967067, 0.7173561, 0.29552022, -0.68531644, 0.66558933, 0, 6.1889358, 0)
-light_energy = 1.4
+transform = Transform3D(0.49999997, -0.36599818, 0.7848856, 0, 0.90630776, 0.42261827, -0.86602545, -0.21130912, 0.45315385, 0, 5, 0)
+light_color = Color(1, 0.9490196, 0.8509804, 1)
+light_energy = 1.2
 shadow_enabled = true
 
 [node name="Pond" type="MeshInstance3D" parent="." unique_id=522077599]
@@ -137,7 +163,7 @@ surface_material_override/0 = SubResource("ShaderMaterial_jyhfs")
 script = ExtResource("4_tbgi4")
 
 [node name="PondFloor" type="MeshInstance3D" parent="." unique_id=690246291]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.6, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.98483384, 0)
 mesh = SubResource("PlaneMesh_btfyo")
 surface_material_override/0 = SubResource("StandardMaterial3D_fts8x")
 
@@ -204,3 +230,6 @@ offset_right = 650.0
 offset_bottom = 58.0
 theme_override_font_sizes/font_size = 21
 text = "Froggy Feast - starter scene (no gameplay yet)"
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=2081026611]
+environment = SubResource("Environment_btfyo")

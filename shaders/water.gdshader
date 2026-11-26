@@ -17,10 +17,8 @@ uniform float wave_time = -1.0;
 
 // ---------- Toon lighting ----------
 uniform float shadow_threshold : hint_range(-1.0, 1.0) = 0.1;
-uniform float shadow_strength : hint_range(0.0, 1.0) = 0.6;
-uniform float spec_shininess : hint_range(1.0, 512.0) = 128.0;
-uniform float spec_threshold : hint_range(0.0, 1.0) = 0.5;
-uniform float spec_strength : hint_range(0.0, 5.0) = 1.5;
+uniform vec4 shadow_tint : source_color = vec4(0.55, 0.62, 0.85, 1.0);
+
 
 // ---------- Transparency ----------
 uniform sampler2D depth_tex : hint_depth_texture, repeat_disable, filter_nearest;
@@ -45,6 +43,18 @@ uniform float mask_scale = 0.08;
 uniform float mask_threshold : hint_range(0.0, 1.0) = 0.6;
 uniform float line_fade_start = 8.0;
 uniform float line_fade_end = 20.0;
+
+// ---------- Sparkles ----------
+uniform float sparkle_spread : hint_range(1.0, 256.0) = 24.0;
+uniform float sparkle_region : hint_range(0.0, 1.0) = 0.3;
+uniform float sparkle_everywhere : hint_range(0.0, 1.0) = 0.0;
+uniform float sparkle_scale = 3.0;
+uniform float sparkle_threshold : hint_range(0.1, 0.9) = 0.45;
+uniform float sparkle_speed = 0.3;
+uniform float sparkle_strength : hint_range(0.0, 10.0) = 3.0;
+uniform float sparkle_fade_end = 12.0;
+
+varying float sparkle_mask;
 
 float wave(vec2 p, float t) {
 	return sin(p.x * wave_scale + t * wave_speed) * 0.5
@@ -112,6 +122,16 @@ void fragment() {
 
 	col = mix(col, foam_color.rgb, foam);
 	alpha = max(alpha, foam);
+	
+	// Sparkles: twinkling dot pattern (lit up in light())
+	vec2 suv = surface_world.xz * sparkle_scale;
+	float s1 = texture(foam_noise, suv + vec2(TIME * sparkle_speed, 0.0)).r;
+	float s2 = texture(foam_noise, suv * 1.3 + vec2(0.0, -TIME * sparkle_speed)).r;
+	float s = s1 * s2;
+	sparkle_mask = smoothstep(sparkle_threshold - 0.02, sparkle_threshold + 0.02, s);
+	sparkle_mask *= 1.0 - smoothstep(sparkle_fade_end * 0.5, sparkle_fade_end, -VERTEX.z);
+	sparkle_mask *= 1.0 - foam;
+	alpha = max(alpha, sparkle_mask);
 
 	ALBEDO = col;
 	ALPHA = alpha;
@@ -123,11 +143,14 @@ void light() {
 	// Lit or shadowed, with a hard edge
 	float ndl = dot(NORMAL, LIGHT) * ATTENUATION;
 	float lit = smoothstep(shadow_threshold - 0.02, shadow_threshold + 0.02, ndl);
-	DIFFUSE_LIGHT += mix(shadow_strength, 1.0, lit) * LIGHT_COLOR / PI;
+	DIFFUSE_LIGHT += mix(shadow_tint.rgb, vec3(1.0), lit) * LIGHT_COLOR / PI;
 
-	// Hard-edged sun sparkle
+	// Where the sun reflects toward the camera
 	vec3 half_dir = normalize(LIGHT + VIEW);
-	float spec = pow(max(dot(NORMAL, half_dir), 0.0), spec_shininess);
-	spec = smoothstep(spec_threshold - 0.02, spec_threshold + 0.02, spec) * lit;
-	SPECULAR_LIGHT += spec * spec_strength * LIGHT_COLOR / PI;
+	float spec = pow(max(dot(NORMAL, half_dir), 0.0), sparkle_spread);
+	float region = smoothstep(sparkle_region - 0.02, sparkle_region + 0.02, spec);
+	region = max(region, sparkle_everywhere);
+
+	// Only the sparkle dots inside that area light up
+	SPECULAR_LIGHT += region * sparkle_mask * lit * sparkle_strength * LIGHT_COLOR / PI;
 }
